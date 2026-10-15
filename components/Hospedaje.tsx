@@ -36,7 +36,7 @@ export default function Hospedaje() {
           fontStyle: "italic",
           fontSize: 15,
           textAlign: "center",
-          color: "rgba(19,31,77,0.72)",
+          color: "#131f4d",
           maxWidth: 320,
           margin: "0 auto 34px",
           lineHeight: 1.6,
@@ -84,7 +84,7 @@ export default function Hospedaje() {
             fontFamily: "var(--font-cormorant), serif",
             fontStyle: "italic",
             fontSize: 15,
-            color: "rgba(19,31,77,0.65)",
+            color: "#131f4d",
             marginBottom: 20,
           }}
         >

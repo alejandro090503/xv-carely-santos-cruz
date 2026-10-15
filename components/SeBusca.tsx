@@ -5,6 +5,7 @@ export default function SeBusca() {
   const ink = "#14286b";
   return (
     <section style={{ padding: "40px 26px 24px", display: "flex", justifyContent: "center" }}>
+      <div className="levita levita-tap" style={{ width: "100%", maxWidth: 320 }}>
       <div style={{
         position: "relative", width: "100%", maxWidth: 320, padding: "22px 22px 20px",
         background: "#efe1c4 url('/imagenes/pergamino.jpg') center / cover",
@@ -27,7 +28,7 @@ export default function SeBusca() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/imagenes/foto5.jpg" alt="Carely en su cartel de Se Busca" style={{
             width: "100%", aspectRatio: "4 / 4.4", objectFit: "cover", objectPosition: "50% 22%", display: "block",
-            filter: "sepia(.75) saturate(.6) contrast(1.08) brightness(.97)",
+            filter: "sepia(.4) saturate(.85) contrast(1.04)",
           }} />
         </div>
         <div style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 700, fontStyle: "italic", fontSize: 19, letterSpacing: 6, color: ink }}>
@@ -46,6 +47,7 @@ export default function SeBusca() {
           <img src="/imagenes/op-jolly.png" alt="" aria-hidden="true" style={{ width: 38, opacity: 0.85 }} />
           <span style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 700, fontSize: 14, letterSpacing: 3, color: ink }}>CUERNAVACA</span>
         </div>
+      </div>
       </div>
     </section>
   );

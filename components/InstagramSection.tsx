@@ -122,7 +122,7 @@ export default function InstagramSection() {
               fontFamily: "var(--font-cormorant), serif",
               fontStyle: "italic",
               fontSize: 15,
-              color: "rgba(19,31,77,0.65)",
+              color: "#131f4d",
               letterSpacing: 0.4,
               lineHeight: 1.55,
               marginBottom: 0,

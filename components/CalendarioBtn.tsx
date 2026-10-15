@@ -44,7 +44,7 @@ export default function CalendarioBtn() {
         fontWeight: 500,
         fontSize: 17,
         color: "#131f4d",
-        opacity: 0.70,
+        opacity: 1,
         marginBottom: 20,
       }}>
         Agrega el evento a tu calendario

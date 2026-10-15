@@ -148,7 +148,7 @@ export default function Ubicacion() {
               fontStyle: "italic",
               fontWeight: 500,
               fontSize: 15,
-              color: "rgba(19,31,77,.65)",
+              color: "#131f4d",
               letterSpacing: 0.4,
               lineHeight: 1.75,
               marginBottom: 8,

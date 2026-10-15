@@ -177,7 +177,7 @@ export default function CountdownTimer() {
             fontStyle: "italic",
             fontSize: 16,
             color: "#131f4d",
-            opacity: 0.65,
+            opacity: 1,
             letterSpacing: 1,
             lineHeight: 1.6,
           }}>

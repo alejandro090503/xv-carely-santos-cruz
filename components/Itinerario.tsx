@@ -140,7 +140,7 @@ function ItinerarioItem({
           fontStyle: "italic",
           fontWeight: 500,
           fontSize: 17,
-          color: "rgba(19,31,77,0.65)",
+          color: "#131f4d",
           letterSpacing: 2,
           lineHeight: 1.5,
         }}

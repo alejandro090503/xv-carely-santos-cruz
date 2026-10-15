@@ -83,19 +83,15 @@ function Rueda({ onOpen }: { onOpen: (i: number) => void }) {
               backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", userSelect: "none",
             }}>
               <div style={{
-                width: "100%", height: "100%", background: "#FFFDF6", padding: "9px 9px 34px",
+                width: "100%", height: "100%", background: "#FFFDF6", padding: "9px 9px 26px",
                 boxShadow: "0 14px 32px rgba(20,40,107,0.28), 0 0 0 1px rgba(110,117,129,0.35)",
                 transform: `rotate(${TILT[i]}deg)`, position: "relative",
               }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={f.src} alt={`Carely — foto ${i + 1}`} draggable={false} style={{
                   width: "100%", height: "100%", objectFit: "cover", objectPosition: f.pos, display: "block",
-                  pointerEvents: "none", filter: "sepia(.55) saturate(.75) contrast(1.05)",
+                  pointerEvents: "none", filter: "sepia(.22) saturate(.92) contrast(1.03)",
                 }} />
-                <span style={{
-                  position: "absolute", left: 0, right: 0, bottom: 6, textAlign: "center",
-                  fontFamily: "var(--font-great-vibes), cursive", fontSize: 21, color: "#1E3A8A",
-                }}>{f.pie}</span>
               </div>
             </div>
           ))}
@@ -132,7 +128,7 @@ function Raspa({ src }: { src: string }) {
       const s = Math.max(cv.width / img.width, cv.height / img.height);
       const w = img.width * s, h = img.height * s;
       ctx.globalCompositeOperation = "source-over";
-      ctx.filter = "sepia(1) saturate(.7) brightness(.92) contrast(1.05)";
+      ctx.filter = "sepia(.6) saturate(.85) brightness(.97)";
       ctx.drawImage(img, (cv.width - w) / 2, (cv.height - h) / 2, w, h);
       ctx.filter = "none";
       ctx.globalCompositeOperation = "destination-out";
@@ -197,16 +193,13 @@ function Lightbox({ i, onClose, onGo }: { i: number; onClose: () => void; onGo: 
           if (Math.abs(dx) > 70) onGo(dx < 0 ? 1 : -1);
         }}
         style={{
-          background: "#FFFDF6", padding: "12px 12px 52px", maxWidth: 400, width: "100%",
+          background: "#FFFDF6", padding: "12px 12px 34px", maxWidth: 400, width: "100%",
           boxShadow: "0 24px 60px rgba(0,0,0,0.45)", position: "relative", transform: `rotate(${TILT[i] / 2}deg)`,
         }}>
         <div style={{ position: "relative", width: "100%", aspectRatio: "3 / 4", overflow: "hidden" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img key={f.src} src={f.src} alt={`Carely — foto ${i + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: f.pos, display: "block" }} />
           <Raspa key={`r${i}`} src={f.src} />
-        </div>
-        <div style={{ position: "absolute", left: 0, right: 0, bottom: 10, textAlign: "center", fontFamily: "var(--font-great-vibes), cursive", fontSize: 30, color: "#1E3A8A" }}>
-          {f.pie}
         </div>
       </div>
       <p style={{ marginTop: 18, color: "#F7E7CE", fontFamily: "var(--font-cormorant), serif", fontStyle: "italic", fontWeight: 600, fontSize: 18, textAlign: "center" }}>
