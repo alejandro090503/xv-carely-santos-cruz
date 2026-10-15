@@ -9,6 +9,8 @@ import CalendarioBtn from "./CalendarioBtn";
 import Itinerario from "./Itinerario";
 import DressCode from "./DressCode";
 import Galeria from "./Galeria";
+import Telegrama from "./Telegrama";
+import SeBusca from "./SeBusca";
 import Familia from "./Familia";
 import MesaRegalos from "./MesaRegalos";
 import InstagramSection from "./InstagramSection";
@@ -55,23 +57,14 @@ export default function InvitacionClient() {
         {/* HERO */}
         <Hero />
 
-        {/* MENSAJE — debajo del Hero completo */}
+        {/* MENSAJE — telegrama vintage */}
         <ScrollReveal>
-          <p style={{
-            maxWidth: 360,
-            margin: "0 auto",
-            padding: "36px 28px 8px",
-            textAlign: "center",
-            fontFamily: "var(--font-cormorant), serif",
-            fontStyle: "italic",
-            fontWeight: 500,
-            fontSize: 18,
-            lineHeight: 1.72,
-            letterSpacing: 0.5,
-            color: "#14286b",
-          }}>
-            Hoy comienza una nueva etapa llena de sueños, ilusiones y momentos que guardaré por siempre en mi corazón. Quiero compartir contigo la emoción, la magia y la alegría de esta noche tan especial.
-          </p>
+          <Telegrama />
+        </ScrollReveal>
+
+        {/* CARTEL SE BUSCA (One Piece) */}
+        <ScrollReveal>
+          <SeBusca />
         </ScrollReveal>
 
         {/* FAMILIA — justo después del header */}

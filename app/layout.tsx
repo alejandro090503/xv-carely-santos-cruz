@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Great_Vibes, Cormorant_Garamond } from "next/font/google";
+import { Great_Vibes, Cormorant_Garamond, Courier_Prime } from "next/font/google";
 import "./globals.css";
 
 const greatVibes = Great_Vibes({
@@ -14,6 +14,13 @@ const cormorant = Cormorant_Garamond({
   style: ["normal", "italic"],
   subsets: ["latin"],
   variable: "--font-cormorant",
+  display: "swap",
+});
+
+const typewriter = Courier_Prime({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-typewriter",
   display: "swap",
 });
 
@@ -47,7 +54,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${greatVibes.variable} ${cormorant.variable}`}
+        className={`${greatVibes.variable} ${cormorant.variable} ${typewriter.variable}`}
       >
         {children}
       </body>

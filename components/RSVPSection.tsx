@@ -212,6 +212,15 @@ export default function RSVPSection() {
 
   return (
     <section style={{ padding: "64px 26px" }}>
+      {/* Den Den Mushi (caracol-teléfono de One Piece) */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/imagenes/op-denden.png" alt="" aria-hidden="true" style={{ display: "block", width: 120, margin: "0 auto -6px", opacity: 0.9 }} />
+      <p style={{
+        textAlign: "center", fontFamily: "var(--font-typewriter), monospace", fontSize: 14, letterSpacing: 2,
+        color: "#14286b", marginBottom: 4,
+      }}>
+        PURU PURU PURU… ¡GACHA!
+      </p>
       <h2 className="gold-shine" style={{
         fontFamily: "var(--font-great-vibes), cursive",
         fontSize: 50,

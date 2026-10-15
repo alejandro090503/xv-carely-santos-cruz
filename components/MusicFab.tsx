@@ -136,7 +136,7 @@ const MusicFab = forwardRef<MusicFabHandle>((_, ref) => {
           animation: playing ? "vinylSpin 2s linear infinite" : "none",
           background: `
             radial-gradient(circle, #0a0a0a 4%, transparent 4.5%),
-            radial-gradient(circle, #A8ADB6 0%, #6E7581 17%, #6b5626 19%, transparent 19.5%),
+            radial-gradient(circle, #F7E7CE 0%, #F7E7CE 17%, #A8ADB6 19%, transparent 19.5%),
             repeating-radial-gradient(circle,
               transparent 21%,   rgba(255,255,255,0.05) 21.7%, transparent 22.3%,
               transparent 24%,   rgba(255,255,255,0.05) 24.7%, transparent 25.3%,
@@ -175,6 +175,11 @@ const MusicFab = forwardRef<MusicFabHandle>((_, ref) => {
             borderRadius: "50%",
             background: "linear-gradient(135deg, rgba(255,255,255,0.13) 0%, transparent 50%, rgba(0,0,0,0.18) 100%)",
             pointerEvents: "none",
+          }} />
+          {/* Etiqueta del disco: bandera pirata de Luffy */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/imagenes/op-jolly.png" alt="" aria-hidden="true" style={{
+            position: "absolute", top: "50%", left: "50%", width: "30%", transform: "translate(-50%,-50%)", pointerEvents: "none",
           }} />
           {/* Center hole */}
           <div style={{
