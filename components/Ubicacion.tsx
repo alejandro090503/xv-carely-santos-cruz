@@ -50,7 +50,7 @@ export default function Ubicacion() {
           marginBottom: 28,
           position: "relative",
           overflow: "hidden",
-          background: "#f3e6c9 url('/imagenes/pergamino.jpg') center / cover",
+          background: "linear-gradient(rgba(255,252,245,.74),rgba(255,252,245,.74)), #fbf6ea url('/imagenes/pergamino.jpg') center / cover",
           backdropFilter: "blur(22px)",
           WebkitBackdropFilter: "blur(22px)",
           borderRadius: 2,
@@ -205,8 +205,8 @@ export default function Ubicacion() {
           {/* Mapa con marco vintage */}
           <div style={{
             position: "relative", margin: "0 18px 22px", aspectRatio: "4 / 3",
-            border: "1px solid rgba(30,58,138,0.55)", background: "#f3e6c9",
-            boxShadow: "inset 0 0 0 5px #f3e6c9, inset 0 0 0 6px rgba(30,58,138,0.35)",
+            border: "1px solid rgba(30,58,138,0.55)", background: "#fbf6ea",
+            boxShadow: "inset 0 0 0 5px #fbf6ea, inset 0 0 0 6px rgba(30,58,138,0.35)",
           }}>
             <iframe
               style={{

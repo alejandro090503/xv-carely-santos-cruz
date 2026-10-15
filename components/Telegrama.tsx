@@ -27,8 +27,8 @@ export default function Telegrama() {
     <section style={{ padding: "40px 22px 8px" }}>
       <div ref={ref} style={{
         position: "relative", maxWidth: 380, margin: "0 auto", padding: "22px 20px 20px",
-        background: "#f3e6c9 url('/imagenes/pergamino.jpg') center / cover",
-        boxShadow: "0 12px 30px rgba(20,40,107,0.18), inset 0 0 40px rgba(120,80,30,0.25)",
+        background: "linear-gradient(rgba(255,252,245,.74),rgba(255,252,245,.74)), #fbf6ea url('/imagenes/pergamino.jpg') center / cover",
+        boxShadow: "0 12px 30px rgba(20,40,107,0.18), inset 0 0 40px rgba(120,80,30,0.08)",
         border: "1px solid rgba(110,117,129,0.45)",
       }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `2px solid ${ink}`, paddingBottom: 8, marginBottom: 12 }}>

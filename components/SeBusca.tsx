@@ -8,8 +8,8 @@ export default function SeBusca() {
       <div className="levita levita-tap" style={{ width: "100%", maxWidth: 320 }}>
       <div style={{
         position: "relative", width: "100%", maxWidth: 320, padding: "22px 22px 20px",
-        background: "#efe1c4 url('/imagenes/pergamino.jpg') center / cover",
-        boxShadow: "0 18px 40px rgba(20,40,107,0.28), inset 0 0 60px rgba(120,80,30,0.35)",
+        background: "linear-gradient(rgba(255,252,245,.74),rgba(255,252,245,.74)), #fbf6ea url('/imagenes/pergamino.jpg') center / cover",
+        boxShadow: "0 18px 40px rgba(20,40,107,0.28), inset 0 0 50px rgba(120,80,30,0.14)",
         transform: "rotate(-1.5deg)", textAlign: "center",
       }}>
         {/* Clavo */}

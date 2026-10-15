@@ -43,8 +43,8 @@ export default function LluviaSobres() {
   return (
     <div ref={secRef} style={{
       position: "relative", width: "100%", textAlign: "center", padding: "30px 18px 28px", overflow: "hidden",
-      background: "#f3e6c9 url('/imagenes/pergamino.jpg') center / cover",
-      border: "1px solid rgba(30,58,138,0.35)", boxShadow: "0 10px 30px rgba(20,40,107,0.14), inset 0 0 50px rgba(120,80,30,0.22)",
+      background: "linear-gradient(rgba(255,252,245,.74),rgba(255,252,245,.74)), #fbf6ea url('/imagenes/pergamino.jpg') center / cover",
+      border: "1px solid rgba(30,58,138,0.35)", boxShadow: "0 10px 30px rgba(20,40,107,0.14), inset 0 0 40px rgba(120,80,30,0.08)",
     }}>
       <div style={{ position: "absolute", inset: 8, border: "1px solid rgba(30,58,138,0.30)", pointerEvents: "none" }} />
 
