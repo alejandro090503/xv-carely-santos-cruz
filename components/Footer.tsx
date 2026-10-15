@@ -10,7 +10,7 @@ export default function Footer() {
       {/* Foto final tipo polaroid */}
       <div className="levita" style={{ display: "inline-block", marginBottom: 26 }}>
         <div style={{
-          position: "relative", background: "#FFFDF6", padding: "12px 12px 44px", width: 250,
+          position: "relative", background: "#FFFDF6", padding: "12px 12px 30px", width: 250,
           boxShadow: "0 18px 40px rgba(20,40,107,0.25), 0 0 0 1px rgba(110,117,129,0.3)", transform: "rotate(-2.5deg)",
         }}>
           {/* Cinta adhesiva */}
@@ -23,9 +23,6 @@ export default function Footer() {
             width: "100%", aspectRatio: "4 / 5", objectFit: "cover", objectPosition: "50% 28%", display: "block",
             filter: "sepia(.18) saturate(.95)",
           }} />
-          <div style={{ position: "absolute", left: 0, right: 0, bottom: 8, fontFamily: "var(--font-great-vibes), cursive", fontSize: 26, color: "#1E3A8A" }}>
-            ¡Te espero!
-          </div>
         </div>
       </div>
 
