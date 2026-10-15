@@ -75,7 +75,7 @@ export default function DressCode() {
         {/* Caballeros / Damas */}
         <div style={{ display: "grid", gridTemplateColumns: "120px 120px", justifyContent: "center", justifyItems: "center", columnGap: 24, marginTop: 10, marginBottom: 28, position: "relative" }}>
           <div style={{ textAlign: "center" }}>
-            <img src="/imagenes/caballero.png" alt="Caballero, vestimenta formal" width={74} height={150} style={{ display: "block", margin: "0 auto", height: 150, width: 74 }} />
+            <img src="/imagenes/caballero.png" alt="Caballero, traje oscuro formal" width={57} height={170} style={{ display: "block", margin: "0 auto", height: 170, width: 57 }} />
             <div style={{
               fontFamily: "var(--font-cormorant), serif",
               fontStyle: "italic",
@@ -88,7 +88,7 @@ export default function DressCode() {
             }}>Caballeros</div>
           </div>
           <div style={{ textAlign: "center" }}>
-            <img src="/imagenes/dama.png" alt="Dama, vestimenta formal" width={62} height={150} style={{ display: "block", margin: "0 auto", height: 150, width: 62 }} />
+            <img src="/imagenes/dama.png" alt="Dama, vestido largo formal" width={71} height={170} style={{ display: "block", margin: "0 auto", height: 170, width: 71 }} />
             <div style={{
               fontFamily: "var(--font-cormorant), serif",
               fontStyle: "italic",
