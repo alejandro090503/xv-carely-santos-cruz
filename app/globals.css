@@ -217,3 +217,5 @@ section h2, section > p, section h3, footer p, footer div {
 .gold-shine-hero {
   filter: drop-shadow(0 0 8px rgba(251,244,230,.95)) drop-shadow(0 0 22px rgba(251,244,230,.7)) drop-shadow(0 2px 6px rgba(0,0,0,.12));
 }
+
+@keyframes heroChispa { 0%,100% { opacity: 0; transform: scale(.4); } 50% { opacity: .95; transform: scale(1); } }
