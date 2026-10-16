@@ -4,7 +4,7 @@ const GCAL_URL = (() => {
   const base = "https://calendar.google.com/calendar/render?action=TEMPLATE";
   const title = encodeURIComponent("XV Años de Carely");
   const details = encodeURIComponent(
-    "Misa 1:00 PM · Parroquia María Auxiliadora (Chipitlán) · Recepción 3:00 PM · Villa Trisara, Cuernavaca."
+    "Misa 1:00 PM · Parroquia María Auxiliadora (Chipitlán) · Recepción 3:00 PM · Jardín Villa Trisara, Cuernavaca."
   );
   const location = encodeURIComponent("Parroquia María Auxiliadora, José María Morelos 50, Chipitlan, 62070 Cuernavaca, Mor.");
   // 2026-11-07 13:00 CDMX (UTC-6) → UTC = 2026-11-07T19:00:00Z

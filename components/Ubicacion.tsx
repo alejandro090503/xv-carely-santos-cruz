@@ -11,7 +11,7 @@ const VENUES = [
   },
   {
     titulo: "Recepción",
-    lugar: "Villa Trisara",
+    lugar: "Jardín Villa Trisara",
     direccion: "Privada Pistaches No. 16, Jardines de Acapantzingo, 62447 Cuernavaca, Mor.",
     hora: "3:00 PM",
     maps: "https://www.google.com/maps/search/?api=1&query=Villa+Trisara+Privada+Pistaches+16+Acapantzingo+Cuernavaca",
