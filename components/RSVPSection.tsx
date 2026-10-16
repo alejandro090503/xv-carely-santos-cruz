@@ -8,48 +8,47 @@ const RSVP_URL  = "https://xv-carely-santos-cruz.vercel.app";
 const RSVP_DEADLINE = new Date(2026, 9, 31, 23, 59, 59, 999);
 const ROJO = "#b91c1c";
 
-type Choice = "yes" | "no" | "";
+type Choice = "yes" | "no";
 
 /* WhatsApp y Messenger cortan la URL en el primer espacio o "&". El panel
    manda un token base64url en ?i= ("nombre|pases|menores") que llega intacto.
-   Se conserva ?para=&pases= por si se envió algún link así. */
-function decodeInvite(tok: string): { para: string; pases: number } | null {
+   Se conserva ?para= por si se envió algún link así. */
+function decodeInvite(tok: string): string {
   try {
     let b64 = tok.replace(/-/g, "+").replace(/_/g, "/");
     while (b64.length % 4) b64 += "=";
     const bin = atob(b64);
     const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
-    const pr = new TextDecoder().decode(bytes).split("|");
-    return { para: (pr[0] || "").trim(), pases: parseInt(pr[1], 10) || 1 };
+    return (new TextDecoder().decode(bytes).split("|")[0] || "").trim();
   } catch {
-    return null;
+    return "";
   }
 }
 
+/* Sin acentos ni mayúsculas para emparejar respuestas guardadas */
+const clave = (x: string) =>
+  String(x || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
+
 export default function RSVPSection() {
   const searchParams = useSearchParams();
-  /* Tope: lo que la familia asignó en el panel. Lo que se ocupa arranca en 1. */
-  const [pases, setPases]       = useState(1);
-  const [aUsar, setAUsar]       = useState(1);
-  const [para, setPara]         = useState("");
-  const [names, setNames]       = useState<string[]>([""]);
-  const [faltan, setFaltan]     = useState<boolean[]>([]);
-  const [choice, setChoice]     = useState<Choice>("");
-  const [loading, setLoading]   = useState(false);
-  const [feedback, setFeedback] = useState<{ msg: string; color: string } | null>(null);
-  const [frozen, setFrozen]     = useState(false);
-  const [listo, setListo]       = useState(false);   // el panel ya respondió y la invitación existe
+  const [para, setPara]           = useState("");
+  /* Nombres que la familia asignó en el panel: una tarjeta por cada uno */
+  const [asignados, setAsignados] = useState<string[]>([]);
+  const [choices, setChoices]     = useState<Record<number, Choice>>({});
+  const [loading, setLoading]     = useState(false);
+  const [feedback, setFeedback]   = useState<{ msg: string; color: string } | null>(null);
+  const [frozen, setFrozen]       = useState(false);
+  const [listo, setListo]         = useState(false);   // el panel ya respondió y la invitación existe
   const [bloqueado, setBloqueado] = useState(false);
-  const [resumen, setResumen]   = useState<{ estado: "confirmado" | "declino"; nombres: string[] } | null>(null);
-  const [btnText, setBtnText]   = useState("Confirmar");
+  const [resumen, setResumen]     = useState<{ estado: "confirmado" | "declino"; nombres: string[] } | null>(null);
+  const [btnText, setBtnText]     = useState("Confirmar");
 
   useEffect(() => {
-    let p = "", raw = NaN;
+    let p = "";
     const tok = searchParams.get("i");
-    if (tok) { const d = decodeInvite(tok); if (d && d.para) { p = d.para; raw = d.pases; } }
-    if (!p) { p = (searchParams.get("para") || "").trim(); raw = parseInt(searchParams.get("pases") || "1", 10); }
+    if (tok) p = decodeInvite(tok);
+    if (!p) p = (searchParams.get("para") || "").trim();
     setPara(p);
-    setPases(isNaN(raw) || raw < 1 || raw > 20 ? 1 : raw);
     setFrozen(Date.now() > RSVP_DEADLINE.getTime());
     if (!p) {
       setFeedback({ msg: "Abre el enlace personalizado que te enviaron para confirmar tu asistencia.", color: ROJO });
@@ -65,16 +64,20 @@ export default function RSVPSection() {
           setFeedback({ msg: "No encontramos tu invitación. Pide a la familia que te envíe tu enlace de nuevo.", color: ROJO });
           return;
         }
-        const asig = typeof inv.pases === "number" && inv.pases > 0 && inv.pases <= 20 ? inv.pases : 1;
-        setPases(asig);
+        const lista: string[] = (Array.isArray(inv.nombres_asignados) ? inv.nombres_asignados : [])
+          .map((n: unknown) => String(n ?? "").trim()).filter(Boolean);
+        if (!lista.length) {
+          setFeedback({ msg: "Tu invitación aún no tiene lugares asignados. Contacta a la familia.", color: ROJO });
+          return;
+        }
+        setAsignados(lista);
         if (inv.estado === "confirmado" || inv.estado === "declino") {
-          const nm: string[] = Array.isArray(inv.nombres_confirmados) ? inv.nombres_confirmados : [];
-          const n = Math.min(asig, Math.max(1, nm.length));
-          setAUsar(n);
-          setNames(Array.from({ length: n }, (_, i) => nm[i] ?? ""));
-          setChoice(inv.estado === "confirmado" ? "yes" : "no");
+          const conf = (Array.isArray(inv.nombres_confirmados) ? inv.nombres_confirmados : []).map((n: string) => clave(n));
+          const previas: Record<number, Choice> = {};
+          lista.forEach((nm, i) => { previas[i] = inv.estado === "declino" ? "no" : (conf.includes(clave(nm)) ? "yes" : "no"); });
+          setChoices(previas);
           setBtnText("Actualizar respuesta");
-          setResumen({ estado: inv.estado, nombres: nm });
+          setResumen({ estado: inv.estado, nombres: lista.filter((_, i) => previas[i] === "yes") });
         }
         if (inv.bloqueado) {
           setBloqueado(true);
@@ -82,24 +85,16 @@ export default function RSVPSection() {
         }
         setListo(true);
       })
-      .catch(() => setListo(true));
+      .catch(() => setFeedback({ msg: "No pudimos cargar tu invitación. Recarga la página.", color: ROJO }));
   }, [searchParams]);
 
   const cerrado = frozen || bloqueado || !listo;
 
-  function cambiarPases(n: number) {
-    n = Math.max(1, Math.min(pases, n));
-    if (n === aUsar) return;
-    setAUsar(n);
-    setNames((prev) => Array.from({ length: n }, (_, i) => prev[i] ?? ""));
-    setFaltan([]);
+  function elegir(i: number, v: Choice) {
+    if (cerrado) return;
+    setChoices((prev) => ({ ...prev, [i]: v }));
     setFeedback(null);
   }
-
-  const handleName = (i: number, val: string) => {
-    setNames((prev) => { const next = [...prev]; next[i] = val; return next; });
-    setFaltan((prev) => { const next = [...prev]; next[i] = false; return next; });
-  };
 
   async function postConfirm(estado: "confirmado" | "declino", nombresArr: string[]) {
     setLoading(true);
@@ -112,8 +107,8 @@ export default function RSVPSection() {
         body: JSON.stringify({
           nombre:              para,
           estado,
-          pases_confirmados:   estado === "confirmado" ? nombresArr.length : 0,
-          nombres_confirmados: estado === "confirmado" ? nombresArr : [],
+          pases_confirmados:   nombresArr.length,
+          nombres_confirmados: nombresArr,
           url_boda:            RSVP_URL,
         }),
       });
@@ -148,54 +143,35 @@ export default function RSVPSection() {
   }
 
   const handleConfirm = () => {
-    if (cerrado || loading) return;
-    if (!choice) { setFeedback({ msg: "Selecciona si asistirás o no.", color: ROJO }); return; }
-    if (choice === "no") { postConfirm("declino", []); return; }
-    const filled = names.map((n) => n.trim()).filter((n) => n);
-    if (filled.length === 0) { setFeedback({ msg: "Por favor escribe al menos un nombre.", color: ROJO }); return; }
-    /* Dos personas en un solo campo ("Ana & Luis") se guardaban como UNA */
-    const doble = names.findIndex((n) => /[&/+,]|\sand\s/i.test(n.trim()));
-    if (doble >= 0) {
-      setFaltan(names.map((_, i) => i === doble));
-      setFeedback({ msg: "Escribe un solo nombre por campo. Si asisten más personas, sube el contador y escribe cada nombre en su campo.", color: ROJO });
+    if (cerrado || loading || !asignados.length) return;
+    const faltan = asignados.filter((_, i) => !choices[i]).length;
+    if (faltan) {
+      setFeedback({ msg: `Por favor responde por cada invitado (${faltan} pendiente${faltan === 1 ? "" : "s"}).`, color: ROJO });
       return;
     }
-    if (filled.length < aUsar) {
-      const f = aUsar - filled.length;
-      setFaltan(names.map((n) => !n.trim()));
-      setFeedback({
-        msg: `Elegiste ${aUsar} pases pero escribiste ${filled.length} nombre${filled.length === 1 ? "" : "s"}. Escribe ${f === 1 ? "el nombre que falta" : `los ${f} nombres que faltan`} o baja el contador a los pases que vas a utilizar.`,
-        color: ROJO,
-      });
-      return;
-    }
-    postConfirm("confirmado", filled);
+    const si = asignados.filter((_, i) => choices[i] === "yes");
+    postConfirm(si.length ? "confirmado" : "declino", si);
   };
 
   /* === Estilos compartidos === */
-  const toggleBtnStyle = (active: boolean): React.CSSProperties => ({
+  const toggleBtnStyle = (active: boolean, v: Choice): React.CSSProperties => ({
     flex: 1,
-    padding: "12px 8px",
+    padding: "11px 6px",
     minHeight: 44,
     borderRadius: 12,
-    border: active ? "1.5px solid #1E3A8A" : "1.5px solid rgba(30,58,138,0.20)",
-    background: active ? "linear-gradient(135deg,rgba(30,58,138,0.14),rgba(169,192,217,0.18))" : "rgba(251,244,230,0.60)",
+    border: active ? (v === "yes" ? "1.5px solid #1E3A8A" : "1.5px solid #6E7581") : "1.5px solid rgba(30,58,138,0.20)",
+    background: active
+      ? (v === "yes" ? "linear-gradient(135deg,#1E3A8A,#14286b)" : "linear-gradient(135deg,rgba(110,117,129,0.22),rgba(169,192,217,0.22))")
+      : "rgba(251,244,230,0.60)",
     fontFamily: "var(--font-cormorant), serif",
     fontStyle: "italic",
     fontWeight: 600,
     fontSize: 15,
-    letterSpacing: 1.5,
-    color: active ? "#14286b" : "#5a6878",
+    letterSpacing: 1,
+    color: active ? (v === "yes" ? "#fff" : "#14286b") : "#5a6878",
     cursor: cerrado ? "not-allowed" : "pointer",
     transition: "all .2s",
     opacity: cerrado ? 0.55 : 1,
-  });
-  const contBtn = (dis: boolean): React.CSSProperties => ({
-    width: 44, height: 44, borderRadius: "50%",
-    border: "1.5px solid #1E3A8A", background: "#fff", color: "#14286b",
-    fontSize: 24, fontWeight: 700, lineHeight: 1,
-    display: "flex", alignItems: "center", justifyContent: "center",
-    cursor: dis ? "default" : "pointer", opacity: dis ? 0.35 : 1,
   });
 
   const cardStyle: React.CSSProperties = {
@@ -259,6 +235,24 @@ export default function RSVPSection() {
           </div>
         )}
 
+        {/* A quién va dirigida: nombre grande con brillo */}
+        {para && listo && (
+          <div style={{ textAlign: "center", marginBottom: 14 }}>
+            <p style={{
+              fontFamily: "var(--font-cormorant), serif", fontSize: 13, fontWeight: 700,
+              letterSpacing: 4, textTransform: "uppercase", color: "#1E3A8A", marginBottom: 4,
+            }}>
+              Esta invitación es para
+            </p>
+            <p className="gold-shine" style={{
+              fontFamily: "var(--font-great-vibes), cursive",
+              fontSize: "clamp(42px, 11.5vw, 56px)", lineHeight: 1.2, padding: "0 .2em",
+            }}>
+              {para}
+            </p>
+          </div>
+        )}
+
         {/* Badge de pases */}
         {para && listo && (
           <div style={{
@@ -271,7 +265,7 @@ export default function RSVPSection() {
             fontStyle: "italic", fontSize: 15, letterSpacing: 2,
             textAlign: "center",
           }}>
-            {pases === 1 ? "1 pase reservado" : `${pases} pases reservados`}
+            {asignados.length === 1 ? "1 pase reservado" : `${asignados.length} pases reservados`}
           </div>
         )}
 
@@ -296,7 +290,7 @@ export default function RSVPSection() {
                 ? (resumen.nombres.length === 1
                     ? `Te esperamos, ${resumen.nombres[0]}.`
                     : `Confirmamos ${resumen.nombres.length} lugares: ${resumen.nombres.join(", ")}.`)
-                : "Lamentamos que no puedas acompañarnos. Te vamos a extrañar."}
+                : "Lamentamos que no puedan acompañarnos. Los vamos a extrañar."}
             </p>
             {!bloqueado && (
               <button
@@ -316,85 +310,42 @@ export default function RSVPSection() {
           </div>
         ) : (
           <>
-            {/* Toggle Sí/No asistiré */}
-            <div style={{ display: "flex", gap: 10, marginBottom: 18 }}>
-              <button type="button" disabled={cerrado} onClick={() => { setChoice("yes"); setFeedback(null); }} style={toggleBtnStyle(choice === "yes")}>
-                Sí asistiré
-              </button>
-              <button type="button" disabled={cerrado} onClick={() => { setChoice("no"); setFeedback(null); }} style={toggleBtnStyle(choice === "no")}>
-                No asistiré
-              </button>
-            </div>
-
-            {choice === "yes" && (
+            {asignados.length > 0 && (
               <>
-                {/* Contador: cuántos de sus pases va a ocupar realmente */}
                 <p style={{
                   textAlign: "center", fontFamily: "var(--font-cormorant), serif", fontStyle: "italic",
-                  fontWeight: 600, fontSize: 17, color: "#131f4d", lineHeight: 1.5, marginBottom: 10,
+                  fontWeight: 600, fontSize: 17, color: "#131f4d", lineHeight: 1.5, marginBottom: 12,
                 }}>
-                  {pases === 1
-                    ? "Tienes 1 pase reservado para ti."
-                    : `Tienes ${pases} pases reservados. Aumenta el número de pases que vayas a ocupar.`}
+                  Marca si asistirá cada persona de tu invitación.
                 </p>
-                {pases > 1 && (
-                  <>
-                    <div style={{
-                      display: "flex", alignItems: "center", justifyContent: "center", gap: 18,
-                      padding: "10px 16px", marginBottom: 6,
-                      background: "rgba(251,244,230,0.80)", border: "1.5px solid rgba(30,58,138,0.20)", borderRadius: 14,
-                    }}>
-                      <button type="button" aria-label="Quitar un pase" disabled={cerrado || aUsar <= 1} onClick={() => cambiarPases(aUsar - 1)} style={contBtn(cerrado || aUsar <= 1)}>−</button>
-                      <span aria-live="polite" style={{ fontFamily: "var(--font-cormorant), serif", fontSize: 38, fontWeight: 600, color: "#14286b", minWidth: 54, textAlign: "center", lineHeight: 1 }}>{aUsar}</span>
-                      <button type="button" aria-label="Agregar un pase" disabled={cerrado || aUsar >= pases} onClick={() => cambiarPases(aUsar + 1)} style={contBtn(cerrado || aUsar >= pases)}>+</button>
-                    </div>
-                    <p style={{
-                      textAlign: "center", fontFamily: "var(--font-cormorant), serif", fontSize: 12, fontWeight: 700,
-                      letterSpacing: 2, textTransform: "uppercase", color: "#1E3A8A", marginBottom: 16,
-                    }}>
-                      {aUsar >= pases ? "Estás usando todos tus pases" : `${aUsar} de ${pases} pases`}
-                    </p>
-                  </>
-                )}
-
-                {/* Un campo por pase que se va a usar */}
-                <div style={{ marginBottom: 8 }}>
-                  {Array.from({ length: aUsar }).map((_, i) => (
-                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-                      <div style={{
-                        flexShrink: 0, width: 30, height: 30, borderRadius: "50%",
-                        background: "linear-gradient(135deg,#1E3A8A,#a9c0d9)",
-                        color: "#fff", fontSize: 13,
-                        fontFamily: "var(--font-cormorant), serif",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        fontWeight: 700,
-                        opacity: cerrado ? 0.55 : 1,
+                {/* Una tarjeta por persona asignada */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 8 }}>
+                  {asignados.map((nm, i) => {
+                    const sel = choices[i];
+                    return (
+                      <div key={i} style={{
+                        padding: "14px 12px 12px", borderRadius: 16, textAlign: "center",
+                        border: sel === "yes" ? "1.5px solid #1E3A8A" : sel === "no" ? "1.5px solid rgba(110,117,129,0.55)" : "1.5px solid rgba(30,58,138,0.16)",
+                        background: sel === "yes" ? "rgba(30,58,138,0.07)" : sel === "no" ? "rgba(110,117,129,0.08)" : "rgba(251,244,230,0.70)",
+                        transition: "all .2s",
                       }}>
-                        {i + 1}
+                        <p style={{
+                          fontFamily: "var(--font-great-vibes), cursive", fontSize: 30, color: "#14286b",
+                          lineHeight: 1.2, marginBottom: 10,
+                        }}>
+                          {nm}
+                        </p>
+                        <div style={{ display: "flex", gap: 10 }}>
+                          <button type="button" disabled={cerrado} aria-pressed={sel === "yes"} onClick={() => elegir(i, "yes")} style={toggleBtnStyle(sel === "yes", "yes")}>
+                            Asistirá
+                          </button>
+                          <button type="button" disabled={cerrado} aria-pressed={sel === "no"} onClick={() => elegir(i, "no")} style={toggleBtnStyle(sel === "no", "no")}>
+                            No asistirá
+                          </button>
+                        </div>
                       </div>
-                      <input
-                        type="text"
-                        disabled={cerrado}
-                        maxLength={60}
-                        placeholder={aUsar === 1 ? "Tu nombre completo" : `Nombre completo del invitado ${i + 1}`}
-                        aria-label={aUsar === 1 ? "Tu nombre completo" : `Nombre completo del invitado ${i + 1}`}
-                        value={names[i] ?? ""}
-                        onChange={(e) => handleName(i, e.target.value)}
-                        style={{
-                          flex: 1, padding: "14px 16px", minHeight: 50,
-                          border: faltan[i] ? `1.5px solid ${ROJO}` : "1.5px solid rgba(30,58,138,0.25)",
-                          boxShadow: faltan[i] ? "0 0 0 3px rgba(185,28,28,0.15)" : "none",
-                          borderRadius: 12,
-                          background: cerrado ? "rgba(241,237,231,0.7)" : "rgba(251,244,230,0.80)",
-                          fontFamily: "var(--font-cormorant), serif",
-                          fontWeight: 500, fontSize: 16, color: "#131f4d",
-                          outline: "none", transition: "border-color 0.3s",
-                          WebkitAppearance: "none",
-                          cursor: cerrado ? "not-allowed" : "text",
-                        }}
-                      />
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </>
             )}
