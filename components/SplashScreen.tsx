@@ -3,9 +3,11 @@ import { useEffect, useRef, useState } from "react";
 
 interface Props {
   onOpen: () => void;
+  /* Se llama en el mismo toque: arranca la música dentro del gesto del usuario */
+  onTap?: () => void;
 }
 
-export default function SplashScreen({ onOpen }: Props) {
+export default function SplashScreen({ onOpen, onTap }: Props) {
   const screenRef  = useRef<HTMLDivElement>(null);
   const imgRef     = useRef<HTMLImageElement>(null);
   const videoRef   = useRef<HTMLVideoElement>(null);
@@ -23,6 +25,7 @@ export default function SplashScreen({ onOpen }: Props) {
   const handleTap = () => {
     if (opening) return;
     setOpening(true);
+    onTap?.();
     if (btnRef.current) btnRef.current.style.opacity = "0";
 
     const vid = videoRef.current;

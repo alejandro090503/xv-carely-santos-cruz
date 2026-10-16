@@ -21,17 +21,53 @@ const MusicFab = forwardRef<MusicFabHandle>((_, ref) => {
     audio.addEventListener("loadedmetadata", salta);
     audio.addEventListener("playing", salta);
     audio.addEventListener("ended", () => { audio.currentTime = INICIO; audio.play().catch(() => {}); });
-    audio.volume = 0.5;
+    audio.volume = 1;
+    audio.crossOrigin = "anonymous"; /* Supabase responde CORS *: permite pasar el audio por Web Audio para el fade */
     audio.src = "https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/audio/xv-carely-santos-cruz/cancion.mp3#t=15";
     audioRef.current = audio;
     return () => { audioRef.current?.pause(); };
   }, []);
 
-  /* Método expuesto al padre — llamado dentro del gesto del usuario */
+  /* Fade de entrada corto (1.6 s). Se usa Web Audio porque iOS ignora audio.volume;
+     si Web Audio falla, se sube el volumen por pasos. */
+  const gainRef = useRef<GainNode | null>(null);
+  const ctxRef = useRef<AudioContext | null>(null);
+  const VOL = 0.5, FADE = 1.6;
+  const playConFade = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    try {
+      if (!ctxRef.current) {
+        const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        const ctx = new AC();
+        const src = ctx.createMediaElementSource(audio);
+        const g = ctx.createGain();
+        src.connect(g).connect(ctx.destination);
+        ctxRef.current = ctx; gainRef.current = g;
+      }
+      const ctx = ctxRef.current!, g = gainRef.current!;
+      ctx.resume().catch(() => {});
+      const t = ctx.currentTime;
+      g.gain.cancelScheduledValues(t);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(VOL, t + FADE);
+    } catch {
+      audio.volume = 0;
+      const t0 = performance.now();
+      const id = setInterval(() => {
+        const k = Math.min(1, (performance.now() - t0) / (FADE * 1000));
+        audio.volume = VOL * k;
+        if (k >= 1) clearInterval(id);
+      }, 60);
+    }
+    audio.play().catch(() => {});
+  };
+
+  /* Método expuesto al padre — se llama en el mismo toque de "Toca para abrir" */
   useImperativeHandle(ref, () => ({
     play() {
       if (!audioRef.current || playing) return;
-      audioRef.current.play().catch(() => {});
+      playConFade();
       setPlaying(true);
     },
   }));
@@ -42,7 +78,7 @@ const MusicFab = forwardRef<MusicFabHandle>((_, ref) => {
       audioRef.current.pause();
       setPlaying(false);
     } else {
-      audioRef.current.play().catch(() => {});
+      playConFade();
       setPlaying(true);
     }
   };

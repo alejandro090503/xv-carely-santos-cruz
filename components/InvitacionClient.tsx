@@ -25,8 +25,6 @@ export default function InvitacionClient() {
   const musicRef = useRef<MusicFabHandle>(null);
 
   const handleOpen = () => {
-    // Iniciar música AQUÍ — mismo call stack que el gesto del usuario → autoplay permitido
-    musicRef.current?.play();
     // Fade-in del contenido en paralelo con el fade-out del splash
     setContentVisible(true);
     // Desmontar el splash tras completarse su fade (0.75s + margen)
@@ -39,7 +37,7 @@ export default function InvitacionClient() {
   return (
     <>
       {/* SPLASH */}
-      {splashMounted && <SplashScreen onOpen={handleOpen} />}
+      {splashMounted && <SplashScreen onOpen={handleOpen} onTap={() => musicRef.current?.play()} />}
 
       {/* CONTENIDO PRINCIPAL */}
       <div
