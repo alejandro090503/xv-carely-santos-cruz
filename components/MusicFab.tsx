@@ -23,7 +23,7 @@ const MusicFab = forwardRef<MusicFabHandle>((_, ref) => {
     audio.addEventListener("ended", () => { audio.currentTime = INICIO; audio.play().catch(() => {}); });
     audio.volume = 1;
     audio.crossOrigin = "anonymous"; /* Supabase responde CORS *: permite pasar el audio por Web Audio para el fade */
-    audio.src = "https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/audio/xv-carely-santos-cruz/cancion.mp3#t=15";
+    audio.src = "https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/audio/xv-carely-santos-cruz/cancion-v2.mp3#t=15";
     audioRef.current = audio;
     return () => { audioRef.current?.pause(); };
   }, []);
