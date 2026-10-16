@@ -57,6 +57,11 @@ export default function InvitacionClient() {
         {/* HERO */}
         <Hero />
 
+        {/* FAMILIA — justo después del header */}
+        <ScrollReveal>
+          <Familia />
+        </ScrollReveal>
+
         {/* MENSAJE — telegrama vintage */}
         <ScrollReveal>
           <Telegrama />
@@ -65,11 +70,6 @@ export default function InvitacionClient() {
         {/* CARTEL SE BUSCA (One Piece) */}
         <ScrollReveal>
           <SeBusca />
-        </ScrollReveal>
-
-        {/* FAMILIA — justo después del header */}
-        <ScrollReveal>
-          <Familia />
         </ScrollReveal>
 
         {/* ORNAMENTO */}

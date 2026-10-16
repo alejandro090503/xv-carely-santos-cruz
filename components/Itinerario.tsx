@@ -4,10 +4,10 @@ import { motion, useInView } from "framer-motion";
 
 const ITEMS = [
   { time: "1:00 pm", event: "Misa", gem: 0 },
-  { time: "3:00 pm", event: "Recepción y Cóctel", gem: 1 },
+  { time: "3:00 pm", event: "Recepción y Cóctel", gem: 1, sil: "/imagenes/luffy-silueta.png" },
   { time: "5:00 pm", event: "Comida", gem: 2 },
   { time: "6:30 pm", event: "Vals y Más", gem: 0 },
-  { time: "11:00 pm", event: "Hora Loca", gem: 1, mj: true },
+  { time: "11:00 pm", event: "Hora Loca", gem: 1, sil: "/imagenes/mj-silueta.png" },
 ];
 
 const GEM_COLORS = [
@@ -68,13 +68,13 @@ function ItinerarioItem({
   event,
   gemIdx,
   delay,
-  mj,
+  sil,
 }: {
   time: string;
   event: string;
   gemIdx: number;
   delay: number;
-  mj?: boolean;
+  sil?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "0px 0px -80px 0px" });
@@ -148,10 +148,10 @@ function ItinerarioItem({
         {event}
       </motion.div>
 
-      {/* Detalle Michael Jackson: silueta del toe-stand en la Hora Loca */}
-      {mj && (
+      {/* Siluetas: Luffy en la recepción, Michael Jackson en la Hora Loca */}
+      {sil && (
         <motion.img
-          src="/imagenes/mj-silueta.png"
+          src={sil}
           alt=""
           aria-hidden="true"
           initial={{ y: 18, opacity: 0, rotate: -4 }}
@@ -204,7 +204,7 @@ export default function Itinerario() {
             event={item.event}
             gemIdx={item.gem}
             delay={0}
-            mj={"mj" in item && item.mj}
+            sil={"sil" in item ? item.sil : undefined}
           />
         ))}
       </div>

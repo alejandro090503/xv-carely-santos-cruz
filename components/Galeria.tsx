@@ -227,12 +227,7 @@ export default function Galeria() {
 
   return (
     <section style={{ padding: "64px 0", position: "relative", overflow: "hidden" }}>
-      {/* Zoro en delineado, sutil, detrás del título */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/imagenes/op-zoro.png" alt="" aria-hidden="true" style={{
-        position: "absolute", top: 10, right: -24, width: 150, opacity: 0.3, pointerEvents: "none", transform: "rotate(6deg)",
-      }} />
-      <p style={{
+            <p style={{
         fontFamily: "var(--font-cormorant), serif", fontStyle: "italic", fontWeight: 600, fontSize: 14,
         letterSpacing: 5, textTransform: "uppercase", color: "#14286b", textAlign: "center", marginBottom: 8, position: "relative",
       }}>

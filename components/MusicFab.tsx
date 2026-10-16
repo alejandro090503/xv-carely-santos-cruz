@@ -12,15 +12,17 @@ const MusicFab = forwardRef<MusicFabHandle>((_, ref) => {
   useEffect(() => {
     const audio = new Audio();
     audio.preload = "none";
-    /* El cliente pidió que arranque en el segundo 15 y que al acabar vuelva al 15 */
+    /* El cliente pidió que arranque en el segundo 15 y que al acabar vuelva al 15.
+       Triple seguro (iOS ignora a veces el seek temprano): fragmento #t=15 en la URL,
+       salto al cargar metadatos y corrección si empezó antes del 14. */
     audio.loop = false;
     const INICIO = 15;
-    let primera = true;
-    audio.addEventListener("loadedmetadata", () => { if (primera) { audio.currentTime = INICIO; primera = false; } });
-    audio.addEventListener("play", () => { if (primera && audio.readyState >= 1) { audio.currentTime = INICIO; primera = false; } });
+    const salta = () => { if (audio.currentTime < INICIO - 1) { try { audio.currentTime = INICIO; } catch { /* aún no seekable */ } } };
+    audio.addEventListener("loadedmetadata", salta);
+    audio.addEventListener("playing", salta);
     audio.addEventListener("ended", () => { audio.currentTime = INICIO; audio.play().catch(() => {}); });
     audio.volume = 0.5;
-    audio.src = "https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/audio/xv-carely-santos-cruz/cancion.mp3";
+    audio.src = "https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/audio/xv-carely-santos-cruz/cancion.mp3#t=15";
     audioRef.current = audio;
     return () => { audioRef.current?.pause(); };
   }, []);

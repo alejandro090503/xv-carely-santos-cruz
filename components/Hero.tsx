@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
    chispas plateadas y el nombre abajo. El borde inferior se disuelve en el pergamino
    con una máscara de curva suave (sin corte recto). */
 const FOTOS = [
+  { src: "/imagenes/foto1.jpg", pos: "50% 30%" },
   { src: "/imagenes/foto4.jpg", pos: "50% 20%" },
   { src: "/imagenes/foto2.jpg", pos: "50% 22%" },
   { src: "/imagenes/foto5.jpg", pos: "50% 22%" },

@@ -15,7 +15,7 @@ export default function Familia() {
         marginBottom: 8,
         opacity: 0.95,
       }}>
-        Acompañada de
+        Con la bendición de Dios y de
       </p>
       <h2 className="gold-shine" style={{
         fontFamily: "var(--font-great-vibes), cursive",
@@ -209,6 +209,19 @@ export default function Familia() {
         </div>
 
       </div>
+      <p style={{
+        fontFamily: "var(--font-cormorant), serif",
+        fontStyle: "italic",
+        fontWeight: 600,
+        fontSize: 20,
+        lineHeight: 1.6,
+        color: "#14286b",
+        textAlign: "center",
+        maxWidth: 330,
+        margin: "30px auto 0",
+      }}>
+        tengo el honor de invitarte a celebrar mis XV años
+      </p>
     </section>
   );
 }
