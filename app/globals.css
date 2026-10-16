@@ -219,3 +219,5 @@ section h2, section > p, section h3, footer p, footer div {
 }
 
 @keyframes heroChispa { 0%,100% { opacity: 0; transform: scale(.4); } 50% { opacity: .95; transform: scale(1); } }
+
+.carrusel-h::-webkit-scrollbar { display: none; }

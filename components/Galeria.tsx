@@ -3,109 +3,116 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 
 /* Galería vintage:
-   1) Rueda 3D de polaroids que se arrastra con el dedo (gira sola hasta que la tocan).
+   1) Carrusel horizontal de polaroids (desliza con el dedo, avanza solo hasta que lo tocan).
    2) Al tocar una foto se abre en grande (lightbox) con desliza / flechas.
    3) En el lightbox la foto aparece en sepia y se "revela" a color al rasparla. */
 const FOTOS = [
-  { src: "/imagenes/foto1.jpg", pos: "50% 40%", pie: "Un sueño" },
-  { src: "/imagenes/foto2.jpg", pos: "50% 30%", pie: "Mis XV" },
-  { src: "/imagenes/foto4.jpg", pos: "50% 25%", pie: "Azul rey" },
-  { src: "/imagenes/foto3.jpg", pos: "50% 30%", pie: "Londres en casa" },
-  { src: "/imagenes/foto5.jpg", pos: "50% 35%", pie: "Mi vestido" },
-  { src: "/imagenes/foto6.jpg", pos: "50% 30%", pie: "Donde todo empezó" },
+  { src: "/imagenes/foto1.jpg", pos: "50% 40%", pie: "" },
+  { src: "/imagenes/gal/g01.jpg", pos: "50% 30%", pie: "" },
+  { src: "/imagenes/gal/g02.jpg", pos: "50% 30%", pie: "" },
+  { src: "/imagenes/gal/g03.jpg", pos: "50% 30%", pie: "" },
+  { src: "/imagenes/gal/g04.jpg", pos: "50% 30%", pie: "" },
+  { src: "/imagenes/gal/g05.jpg", pos: "50% 30%", pie: "" },
+  { src: "/imagenes/gal/g06.jpg", pos: "50% 30%", pie: "" },
+  { src: "/imagenes/gal/g07.jpg", pos: "50% 30%", pie: "" },
+  { src: "/imagenes/gal/g08.jpg", pos: "50% 30%", pie: "" },
+  { src: "/imagenes/gal/g10.jpg", pos: "50% 30%", pie: "" },
+  { src: "/imagenes/gal/g11.jpg", pos: "50% 30%", pie: "" },
+  { src: "/imagenes/gal/g12.jpg", pos: "50% 30%", pie: "" },
+  { src: "/imagenes/gal/g13.jpg", pos: "50% 30%", pie: "" },
+  { src: "/imagenes/gal/g14.jpg", pos: "50% 30%", pie: "" },
+  { src: "/imagenes/gal/g15.jpg", pos: "50% 30%", pie: "" },
+  { src: "/imagenes/gal/g16.jpg", pos: "50% 30%", pie: "" },
+  { src: "/imagenes/foto2.jpg", pos: "50% 30%", pie: "" },
+  { src: "/imagenes/foto4.jpg", pos: "50% 25%", pie: "" },
+  { src: "/imagenes/foto3.jpg", pos: "50% 30%", pie: "" },
+  { src: "/imagenes/foto5.jpg", pos: "50% 35%", pie: "" },
 ];
-const TILT = [-3, 2.5, -1.5, 3, -2.5, 1.5];
+const TILT = FOTOS.map((_, i) => [-3, 2.5, -1.5, 3, -2.5, 1.5][i % 6]);
 
-function Rueda({ onOpen }: { onOpen: (i: number) => void }) {
-  const ringRef = useRef<HTMLDivElement>(null);
-  const [hint, setHint] = useState(true);
+/* Carrusel horizontal de polaroids: se desliza con el dedo (scroll con imán),
+   avanza solo cada pocos segundos hasta que lo tocan, y al tocar una foto se abre. */
+function Carrusel({ onOpen }: { onOpen: (i: number) => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [act, setAct] = useState(0);
+  const tocado = useRef(false);
 
   useEffect(() => {
-    const ring = ringRef.current;
-    if (!ring) return;
-    const n = FOTOS.length;
-    let rot = 0, vel = 0, drag = false, startX = 0, startRot = 0, lastX = 0, moved = 0, auto = true;
-    let raf = 0;
-    const set = () => { ring.style.transform = `translateZ(-200px) rotateY(${rot}deg)`; };
-    set();
-    const tick = () => {
-      if (!drag) {
-        if (auto) rot += 0.12;
-        else { rot += vel; vel *= 0.94; }
-        set();
-      }
-      raf = requestAnimationFrame(tick);
+    const el = ref.current;
+    if (!el) return;
+    const onScroll = () => {
+      const card = el.firstElementChild as HTMLElement | null;
+      if (!card) return;
+      setAct(Math.round(el.scrollLeft / (card.offsetWidth + 16)));
     };
-    raf = requestAnimationFrame(tick);
-    const down = (x: number) => { drag = true; auto = false; startX = x; lastX = x; startRot = rot; vel = 0; moved = 0; setHint(false); };
-    const move = (x: number) => { if (!drag) return; rot = startRot + (x - startX) * 0.45; vel = (x - lastX) * 0.5; moved = Math.max(moved, Math.abs(x - startX)); lastX = x; set(); };
-    const up = (target: EventTarget | null) => {
-      if (!drag) return;
-      drag = false;
-      if (moved < 6) {
-        const card = (target as HTMLElement | null)?.closest?.("[data-i]") as HTMLElement | null;
-        if (card) onOpen(Number(card.dataset.i));
-      }
-    };
-    const md = (e: MouseEvent) => { e.preventDefault(); down(e.clientX); };
-    const mm = (e: MouseEvent) => move(e.clientX);
-    const mu = (e: MouseEvent) => up(e.target);
-    const ts = (e: TouchEvent) => down(e.touches[0].clientX);
-    const tm = (e: TouchEvent) => move(e.touches[0].clientX);
-    const te = (e: TouchEvent) => up(document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY));
-    ring.addEventListener("mousedown", md);
-    window.addEventListener("mousemove", mm);
-    window.addEventListener("mouseup", mu);
-    ring.addEventListener("touchstart", ts, { passive: true });
-    ring.addEventListener("touchmove", tm, { passive: true });
-    ring.addEventListener("touchend", te);
-    void n;
-    return () => {
-      cancelAnimationFrame(raf);
-      ring.removeEventListener("mousedown", md);
-      window.removeEventListener("mousemove", mm);
-      window.removeEventListener("mouseup", mu);
-      ring.removeEventListener("touchstart", ts);
-      ring.removeEventListener("touchmove", tm);
-      ring.removeEventListener("touchend", te);
-    };
-  }, [onOpen]);
+    const stop = () => { tocado.current = true; };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    el.addEventListener("pointerdown", stop);
+    el.addEventListener("touchstart", stop, { passive: true });
+    const id = setInterval(() => {
+      if (tocado.current) return;
+      const card = el.firstElementChild as HTMLElement | null;
+      if (!card) return;
+      const paso = card.offsetWidth + 16;
+      const fin = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4;
+      el.scrollTo({ left: fin ? 0 : el.scrollLeft + paso, behavior: "smooth" });
+    }, 3200);
+    return () => { clearInterval(id); el.removeEventListener("scroll", onScroll); el.removeEventListener("pointerdown", stop); el.removeEventListener("touchstart", stop); };
+  }, []);
+
+  const ir = (d: number) => {
+    const el = ref.current; const card = el?.firstElementChild as HTMLElement | null;
+    if (!el || !card) return;
+    tocado.current = true;
+    el.scrollBy({ left: d * (card.offsetWidth + 16), behavior: "smooth" });
+  };
 
   return (
     <>
-      <div style={{ position: "relative", width: "100%", height: 400, perspective: 1100, overflow: "visible" }}>
-        <div ref={ringRef} style={{ position: "absolute", inset: 0, transformStyle: "preserve-3d", cursor: "grab", touchAction: "pan-y" }}>
-          {FOTOS.map((f, i) => (
-            <div key={i} data-i={i} style={{
-              position: "absolute", left: "50%", top: "50%", width: 178, height: 236,
-              marginLeft: -89, marginTop: -118,
-              transform: `rotateY(${(360 / FOTOS.length) * i}deg) translateZ(200px)`,
-              backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", userSelect: "none",
+      <div ref={ref} className="carrusel-h" style={{
+        display: "flex", gap: 16, overflowX: "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch",
+        padding: "18px calc(50% - 115px) 26px", scrollbarWidth: "none",
+      }}>
+        {FOTOS.map((f, i) => (
+          <button key={f.src} type="button" onClick={() => onOpen(i)} aria-label={`Ver foto ${i + 1}`} style={{
+            flex: "0 0 230px", scrollSnapAlign: "center", border: "none", padding: 0, background: "none", cursor: "pointer",
+            transform: `rotate(${TILT[i]}deg) scale(${i === act ? 1 : 0.9})`, transition: "transform .45s ease, opacity .45s ease",
+            opacity: i === act ? 1 : 0.7,
+          }}>
+            <div style={{
+              background: "#FFFDF6", padding: "10px 10px 28px",
+              boxShadow: "0 14px 30px rgba(20,40,107,0.25), 0 0 0 1px rgba(110,117,129,0.3)",
             }}>
-              <div style={{
-                width: "100%", height: "100%", background: "#FFFDF6", padding: "9px 9px 26px",
-                boxShadow: "0 14px 32px rgba(20,40,107,0.28), 0 0 0 1px rgba(110,117,129,0.35)",
-                transform: `rotate(${TILT[i]}deg)`, position: "relative",
-              }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={f.src} alt={`Carely — foto ${i + 1}`} draggable={false} style={{
-                  width: "100%", height: "100%", objectFit: "cover", objectPosition: f.pos, display: "block",
-                  pointerEvents: "none", filter: "sepia(.22) saturate(.92) contrast(1.03)",
-                }} />
-              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={f.src} alt={`Carely — foto ${i + 1}`} draggable={false} loading={i < 4 ? "eager" : "lazy"} style={{
+                width: "100%", aspectRatio: "3 / 4", objectFit: "cover", objectPosition: f.pos, display: "block",
+                filter: "sepia(.22) saturate(.92) contrast(1.03)",
+              }} />
             </div>
-          ))}
-        </div>
+          </button>
+        ))}
+      </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 18, marginTop: 4 }}>
+        <button onClick={() => ir(-1)} aria-label="Foto anterior" style={btnNav}>‹</button>
+        <span style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 700, fontSize: 17, letterSpacing: 2, color: "#14286b", minWidth: 64, textAlign: "center" }}>
+          {Math.min(act + 1, FOTOS.length)} / {FOTOS.length}
+        </span>
+        <button onClick={() => ir(1)} aria-label="Foto siguiente" style={btnNav}>›</button>
       </div>
       <p style={{
-        textAlign: "center", marginTop: 6, fontFamily: "var(--font-cormorant), serif", fontStyle: "italic",
-        fontWeight: 600, fontSize: 17, color: "#131f4d", transition: "opacity .5s", opacity: hint ? 1 : 0.75,
+        textAlign: "center", marginTop: 10, fontFamily: "var(--font-cormorant), serif", fontStyle: "italic",
+        fontWeight: 600, fontSize: 17, color: "#131f4d",
       }}>
-        Gira la rueda con el dedo y toca una foto para verla
+        Desliza para ver más y toca una foto para verla
       </p>
     </>
   );
 }
+
+const btnNav: React.CSSProperties = {
+  width: 42, height: 42, borderRadius: "50%", border: "1px solid rgba(110,117,129,0.55)",
+  background: "rgba(255,255,255,0.75)", color: "#1E3A8A", fontSize: 28, lineHeight: "36px", cursor: "pointer",
+};
 
 /* Foto en sepia que se revela a color al rasparla */
 function Raspa({ src }: { src: string }) {
@@ -239,7 +246,7 @@ export default function Galeria() {
         Mi Galería
       </h2>
 
-      <Rueda onOpen={onOpen} />
+      <Carrusel onOpen={onOpen} />
 
       {/* Portal: el ScrollReveal aplica transform y rompería el position:fixed */}
       {open !== null && createPortal(<Lightbox i={open} onClose={onClose} onGo={onGo} />, document.body)}
