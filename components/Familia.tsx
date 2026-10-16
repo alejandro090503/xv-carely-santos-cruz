@@ -93,6 +93,30 @@ export default function Familia() {
             }}>&amp;</span>
             Carlos Santos Carranza
           </div>
+
+          {/* Subsección: hermano */}
+          <div style={{ width: 60, height: 1, margin: "22px auto 18px", background: "linear-gradient(90deg,transparent,rgba(30,58,138,.45),transparent)" }} />
+          <p style={{
+            fontFamily: "var(--font-cormorant), serif",
+            fontStyle: "italic",
+            fontWeight: 700,
+            fontSize: 15,
+            letterSpacing: 6,
+            textTransform: "uppercase",
+            color: "#14286b",
+            marginBottom: 10,
+          }}>
+            Mi Hermano
+          </p>
+          <div style={{
+            fontFamily: "var(--font-cormorant), serif",
+            fontWeight: 500,
+            fontSize: 21,
+            color: "#131f4d",
+            lineHeight: 1.6,
+          }}>
+            Roberto Carlos Santos Cruz
+          </div>
         </div>
 
         {/* Divisor */}

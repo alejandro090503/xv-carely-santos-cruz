@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 
 const TEXTO =
-  "Hoy comienza una nueva etapa llena de sueños, ilusiones y momentos que guardaré por siempre en mi corazón. Quiero compartir contigo la emoción, la magia y la alegría de este día tan especial.";
+  "Quince estrellas descendieron para iluminar mi día, quince flores se abrieron llenando el alma de alegría. Y entre sueños y esperanzas, con la luna como testigo, hoy mis quince primaveras quiero celebrar contigo.";
 
 /* Mensaje inicial como telegrama antiguo: se escribe letra por letra al aparecer. */
 export default function Telegrama() {
@@ -36,11 +36,11 @@ export default function Telegrama() {
           <span style={{ fontFamily: "var(--font-typewriter), monospace", fontSize: 14, color: ink }}>N.º 15</span>
         </div>
         <div style={{ fontFamily: "var(--font-typewriter), monospace", fontSize: 14, color: ink, lineHeight: 1.6, marginBottom: 10 }}>
-          DE: CARELY SANTOS CRUZ<br />PARA: TI · CUERNAVACA, MOR.
+          DE: CARELY SANTOS CRUZ<br />PARA: TI
         </div>
         <p aria-label={TEXTO} style={{
           fontFamily: "var(--font-typewriter), monospace", fontSize: 16.5, lineHeight: 1.65, color: "#131f4d",
-          minHeight: "11em", margin: 0,
+          minHeight: "13em", margin: 0,
         }}>
           <span aria-hidden="true">{TEXTO.slice(0, n)}</span>
           <span aria-hidden="true" style={{ display: n >= TEXTO.length ? "none" : "inline-block", width: 9, height: 17, background: ink, verticalAlign: "-3px", animation: "tgBlink .9s steps(1) infinite" }} />

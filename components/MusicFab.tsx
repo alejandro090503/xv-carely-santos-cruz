@@ -12,7 +12,13 @@ const MusicFab = forwardRef<MusicFabHandle>((_, ref) => {
   useEffect(() => {
     const audio = new Audio();
     audio.preload = "none";
-    audio.loop = true;
+    /* El cliente pidió que arranque en el segundo 15 y que al acabar vuelva al 15 */
+    audio.loop = false;
+    const INICIO = 15;
+    let primera = true;
+    audio.addEventListener("loadedmetadata", () => { if (primera) { audio.currentTime = INICIO; primera = false; } });
+    audio.addEventListener("play", () => { if (primera && audio.readyState >= 1) { audio.currentTime = INICIO; primera = false; } });
+    audio.addEventListener("ended", () => { audio.currentTime = INICIO; audio.play().catch(() => {}); });
     audio.volume = 0.5;
     audio.src = "https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/audio/xv-carely-santos-cruz/cancion.mp3";
     audioRef.current = audio;

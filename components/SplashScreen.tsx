@@ -59,7 +59,7 @@ export default function SplashScreen({ onOpen }: Props) {
         zIndex: 10000,
         overflow: "hidden",
         cursor: opening ? "default" : "pointer",
-        background: "#c9ae8c",
+        background: "#1E3A8A",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

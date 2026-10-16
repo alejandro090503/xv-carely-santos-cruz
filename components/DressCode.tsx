@@ -115,8 +115,8 @@ export default function DressCode() {
           }}>
             Colores a evitar
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "120px 120px", justifyContent: "center", justifyItems: "center", columnGap: 24 }}>
-            {[{ c: "#0000ff", n: "Azul rey" }, { c: "#85e8ed", n: "Azul turquesa" }].map((x) => (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 92px)", justifyContent: "center", justifyItems: "center", columnGap: 6 }}>
+            {[{ c: "#1F3FBF", n: "Azul rey" }, { c: "#87CEEB", n: "Azul cielo" }, { c: "#0B1F4D", n: "Azul marino" }].map((x) => (
               <div key={x.c} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
                 <div style={{ position: "relative", width: 44, height: 44, borderRadius: "50%", background: x.c, border: "2px solid #fff", boxShadow: "0 0 0 1px rgba(110,117,129,0.55), 0 4px 12px rgba(20,40,107,0.18)" }}>
                   <div style={{ position: "absolute", left: "50%", top: -4, bottom: -4, width: 2, background: "#6E7581", transform: "translateX(-50%) rotate(45deg)" }} />

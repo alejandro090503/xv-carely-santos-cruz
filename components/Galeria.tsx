@@ -7,9 +7,9 @@ import { createPortal } from "react-dom";
    2) Al tocar una foto se abre en grande (lightbox) con desliza / flechas.
    3) En el lightbox la foto aparece en sepia y se "revela" a color al rasparla. */
 const FOTOS = [
+  { src: "/imagenes/foto1.jpg", pos: "50% 40%", pie: "Un sueño" },
   { src: "/imagenes/foto2.jpg", pos: "50% 30%", pie: "Mis XV" },
   { src: "/imagenes/foto4.jpg", pos: "50% 25%", pie: "Azul rey" },
-  { src: "/imagenes/foto1.jpg", pos: "50% 40%", pie: "Un sueño" },
   { src: "/imagenes/foto3.jpg", pos: "50% 30%", pie: "Londres en casa" },
   { src: "/imagenes/foto5.jpg", pos: "50% 35%", pie: "Mi vestido" },
   { src: "/imagenes/foto6.jpg", pos: "50% 30%", pie: "Donde todo empezó" },
