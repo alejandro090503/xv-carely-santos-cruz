@@ -133,7 +133,7 @@ export default function Hero() {
               Esta invitación es para
             </p>
             <p style={{
-              fontFamily: "var(--font-great-vibes), cursive", fontSize: persona.para.length > 22 ? 34 : 42, lineHeight: 1.2, margin: "6px 0 8px",
+              fontFamily: "var(--font-cormorant), serif", fontWeight: 700, letterSpacing: 1, fontSize: persona.para.length > 22 ? 26 : 32, lineHeight: 1.25, margin: "6px 0 8px",
               color: "#fff", textShadow: "0 0 14px rgba(220,228,242,.7)", padding: "0 4px",
             }}>
               {persona.para}

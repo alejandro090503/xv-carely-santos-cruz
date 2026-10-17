@@ -245,8 +245,8 @@ export default function RSVPSection() {
               Esta invitación es para
             </p>
             <p className="gold-shine" style={{
-              fontFamily: "var(--font-great-vibes), cursive",
-              fontSize: "clamp(42px, 11.5vw, 56px)", lineHeight: 1.2, padding: "0 .2em",
+              fontFamily: "var(--font-cormorant), serif", fontWeight: 700,
+              fontSize: "clamp(30px, 8.5vw, 40px)", lineHeight: 1.2, letterSpacing: 1, padding: "0 .2em",
             }}>
               {para}
             </p>
@@ -330,8 +330,8 @@ export default function RSVPSection() {
                         transition: "all .2s",
                       }}>
                         <p style={{
-                          fontFamily: "var(--font-great-vibes), cursive", fontSize: 30, color: "#14286b",
-                          lineHeight: 1.2, marginBottom: 10,
+                          fontFamily: "var(--font-cormorant), serif", fontWeight: 700, fontSize: 22, color: "#14286b",
+                          lineHeight: 1.25, letterSpacing: 0.5, marginBottom: 10,
                         }}>
                           {nm}
                         </p>
