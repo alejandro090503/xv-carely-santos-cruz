@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 
 const PANEL_API = "https://panel-invitados.vercel.app/api/confirmar";
 const RSVP_URL  = "https://xv-carely-santos-cruz.vercel.app";
-/* Deadline: 4 nov 2026 23:59:59 — desde 5 nov 00:00 se congela */
-const RSVP_DEADLINE = new Date(2026, 10, 4, 23, 59, 59, 999);
+/* Deadline: 6 nov 2026 23:59:59 — desde 7 nov 00:00 se congela */
+const RSVP_DEADLINE = new Date(2026, 10, 6, 23, 59, 59, 999);
 const ROJO = "#b91c1c";
 
 type Choice = "yes" | "no";
@@ -230,7 +230,7 @@ export default function RSVPSection() {
             color: "#14286b",
             textAlign: "center",
           }}>
-            ✦ El plazo para confirmar cerró el <strong style={{ fontStyle: "normal" }}>4 de noviembre de 2026</strong>.<br />
+            ✦ El plazo para confirmar cerró el <strong style={{ fontStyle: "normal" }}>6 de noviembre de 2026</strong>.<br />
             Si necesitas ajustar tu respuesta, por favor contacta directamente.
           </div>
         )}
@@ -276,7 +276,7 @@ export default function RSVPSection() {
           fontStyle: "italic", fontWeight: 500, fontSize: 15,
           color: "#1E3A8A", letterSpacing: 2, marginBottom: 18,
         }}>
-          Confirma antes del 4 de noviembre de 2026
+          Confirma antes del 6 de noviembre de 2026
         </p>
 
         {resumen ? (
